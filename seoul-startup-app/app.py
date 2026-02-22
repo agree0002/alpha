@@ -17,10 +17,13 @@ st.markdown("### 머신러닝 기반 업종별 행정동 추천 서비스")
 def load_data():
     base_path = Path(__file__).resolve().parent
 
-    csv_path = base_path / "top5.csv"
+    csv_path = base_path / "top5_2.csv"
     geo_path = base_path / "hangjeongdong.geojson"
 
     df = pd.read_csv(csv_path)
+
+    st.write("현재 경로:", base_path)
+    st.write("파일 목록:", [f.name for f in base_path.iterdir()])
 
     with open(geo_path, encoding="utf-8") as f:
         geo = json.load(f)
@@ -38,7 +41,10 @@ industry = st.selectbox(
 )
 
 filtered = df[df["업종"] == industry]
-top5 = filtered.sort_values("순위").head(5)
+# 서울 평균 대비 매출지수 기준으로 정렬하여 순위 부여
+top5 = filtered.sort_values("서울 평균 대비 매출지수", ascending=False).head(5)
+top5 = top5.copy()
+top5['순위'] = range(1, len(top5) + 1)
 
 # ----------------------------
 # 레이아웃 분할 (지도 | 리포트)
@@ -147,9 +153,11 @@ with col2:
         <div style="background-color: {color}; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 2px solid black;">
         <strong style="font-size: 16px; color: {'white' if row['순위'] in [1,5] else 'black'};">{row['순위']}위 | {row['행정동']}</strong><br>
         <span style="color: {'white' if row['순위'] in [1,5] else 'black'};">
-        • 예상 매출: {row['예상매출(점포당)']:,}원<br>
-        • 서울 대비 매출: {row['서울시 대비 매출']:.2f}배<br>
-        • 점포 수: {row['점포_수']:,}개
+        • 예상 매출: {row['예상매출(점포당)']:,.0f}원<br>
+        • 서울 대비 매출: {row['서울 평균 대비 매출지수']:.2f}배<br>
+        • 점포 수: {row['점포_수']:,}개<br>
+        • 총 직장인구: {row['총_직장_인구_수']:,}명<br>
+        • 총 유동인구: {row['총_유동인구_수']:,}명
         </span>
         </div>
         """, unsafe_allow_html=True)
