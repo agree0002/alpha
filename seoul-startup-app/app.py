@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import folium
 import json
+from pathlib import Path
 from streamlit_folium import st_folium
 
 st.set_page_config(layout="wide")
@@ -14,9 +15,11 @@ st.markdown("### 머신러닝 기반 업종별 행정동 추천 서비스")
 # ----------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("업종별행정동top5.csv")
-    df.columns = df.columns.str.strip()
-    with open("hangjeongdong_서울특별시.geojson", encoding="utf-8") as f:
+    base_path = Path(__file__).parent
+
+    df = pd.read_csv(base_path / "업종별행정동top5.csv")
+
+    with open(base_path / "hangjeongdong_서울특별시.geojson", encoding="utf-8") as f:
         geo = json.load(f)
     return df, geo
 
