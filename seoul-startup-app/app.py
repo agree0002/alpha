@@ -81,13 +81,19 @@ with col1:
             props['is_top5'] = True
             props['rank'] = int(data['순위'])
             props['sales'] = int(data['예상매출(점포당)'])
+            props['sales_index'] = float(data['서울 평균 대비 매출지수'])
             props['stores'] = int(data['점포_수'])
+            props['work_pop'] = int(data['총_직장_인구_수'])
+            props['flow_pop'] = int(data['총_유동인구_수'])
 
         else:
             props['is_top5'] = False
             props['rank'] = None
             props['sales'] = None
+            props['sales_index'] = None
             props['stores'] = None
+            props['work_pop'] = None
+            props['flow_pop'] = None
 
     # 스타일 함수
     def style_function(feature):
@@ -113,12 +119,12 @@ with col1:
         geo_copy,
         style_function=style_function,
         tooltip=folium.GeoJsonTooltip(
-            fields=['adm_nm'],
-            aliases=['행정동:']
+            fields=['adm_nm', 'rank'],
+            aliases=['행정동:', '순위:']
         ),
         popup=folium.GeoJsonPopup(
-            fields=['adm_nm', 'rank', 'sales', 'stores'],
-            aliases=['행정동:', '순위:', '예상매출:', '점포수:'],
+            fields=['adm_nm', 'rank', 'sales', 'sales_index', 'stores', 'work_pop', 'flow_pop'],
+            aliases=['행정동:', '순위:', '예상매출(점포당):', '서울 평균 대비 매출지수:', '점포수:', '총 직장인구:', '총 유동인구:'],
             localize=True
         )
     ).add_to(m)
