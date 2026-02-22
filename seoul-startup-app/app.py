@@ -15,12 +15,16 @@ st.markdown("### 머신러닝 기반 업종별 행정동 추천 서비스")
 # ----------------------------
 @st.cache_data
 def load_data():
-    base_path = Path(__file__).parent
+    base_path = Path(__file__).resolve().parent
 
-    df = pd.read_csv(base_path / "업종별행정동top5.csv")
+    csv_path = base_path / "업종별행정동top5.csv"
+    geo_path = base_path / "hangjeongdong_서울특별시.geojson"
 
-    with open(base_path / "hangjeongdong_서울특별시.geojson", encoding="utf-8") as f:
+    df = pd.read_csv(csv_path)
+
+    with open(geo_path, encoding="utf-8") as f:
         geo = json.load(f)
+
     return df, geo
 
 df, geo_data = load_data()
