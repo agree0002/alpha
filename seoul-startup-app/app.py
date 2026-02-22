@@ -22,9 +22,6 @@ def load_data():
 
     df = pd.read_csv(csv_path)
 
-    st.write("현재 경로:", base_path)
-    st.write("파일 목록:", [f.name for f in base_path.iterdir()])
-
     with open(geo_path, encoding="utf-8") as f:
         geo = json.load(f)
 
